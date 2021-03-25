@@ -1,18 +1,27 @@
+from dictionary import translate
 import json
-from difflib import get_close_matches
-
-data = json.load(open('data.json'))
 
 
-def translate():
-    word = input("Which word would you like to know? ").lower()
-    if word in data:
-        return data[word]
-    elif len(get_close_matches(word, data.keys(), cutoff=0.8)) > 0:
-        return "Did you mean %s instead?" % get_close_matches(word, data.keys(), cutoff=0.8) [0]
+def program_execution():
+    quit_program = False
+    while not quit_program:
+        data = json.load(open('data.json'))
+        output = translate(data)
 
-    else:
-        pass
+        if type(output) == list:
+            for item in output:
+                print(item + " ")
+        else:
+            print(output)
+
+        exit_question = input("Would you like to know another word? Press Q to quit or another key to continue. ")
+        if exit_question == "":
+            continue
+        elif exit_question[0].lower() == "q":
+            print("Bye!")
+            quit_program = True
+        else:
+            continue
 
 
-print(translate())
+program_execution()
