@@ -4,36 +4,49 @@ from db import connection
 
 def find_by_name(name):
     cursor = connection.cursor()
-    query = cursor.execute("SELECT * FROM Dictionary where Expression=name")
-    results = cursor.fetchall()
+    sql_query = cursor.execute("SELECT * FROM Dictionary WHERE Expression = '%s'" % name)
+    results = cursor.fetchone()
     return results
 
 
-def translate(data):
+def find_all_words():
+    cursor = connection.cursor()
+    sql_query = cursor.execute("SELECT Expression FROM Dictionary")
+    results = cursor.fetchall()
+    list_of_words = []
+    for result in results:
+        list_of_words.append(result[0])
+    return list_of_words
+
+
+def translate():
     word = input("Which word would you like to know? ").lower()
 
     results = find_by_name(word)
+    all_words = find_all_words()
 
-    if word in data:
-        return data[word]
+    if results is not None:
+        if word == results[0]:
+            return results[1]
+        elif word.title() == results[0]:
+            return results[1]
+        elif word.upper() == results[0]:
+            return results[1]
+    else:
+        similar_word = get_close_matches(word, all_words, cutoff=0.8)
+        print(similar_word)
 
-    elif word.title() in data:
-        return data[word.title()]
 
-    elif word.upper() in data:
-        return data[word.upper()]
-
-    elif len(get_close_matches(word, data.keys(), cutoff=0.8)) > 0:
+    """elif len(len_similar_word) > 0:
         answer = input(
-            "Did you mean %s instead? Enter Y if yes, or N if no.\n " %
-            get_close_matches(word, data.keys(), cutoff=0.8)[
-                0])[0].upper()
+            "Did you mean %s instead? Enter Y if yes, or N if no.\n " % similar_word)[0].upper()
         if answer == "Y":
-            return data[get_close_matches(word, data.keys(), cutoff=0.8)[0]]
+            correct_word = find_by_name(similar_word)
+            return correct_word[0]
         elif answer == "N":
             return "Alrighty then. Bye!"
         else:
             return "Invalid answer."
 
     else:
-        return "This word doesn't exist."
+        return "This word doesn't exist."""
