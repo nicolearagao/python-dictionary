@@ -26,27 +26,29 @@ def translate():
     all_words = find_all_words()
 
     if results is not None:
+
         if word == results[0]:
-            return results[1]
+            print(results[1])
         elif word.title() == results[0]:
-            return results[1]
+            print(results[1])
         elif word.upper() == results[0]:
-            return results[1]
+            print(results[1])
     else:
-        similar_word = get_close_matches(word, all_words, cutoff=0.8)
-        print(similar_word)
+        try:
+            similar_word = get_close_matches(word, all_words, cutoff=0.8)[0]
+            if len(similar_word) > 0:
+                answer = input(
+                    "Did you mean %s instead? Enter Y for yes, or N for no. " % similar_word
+                )[0].upper()
+                if answer == "Y":
+                    correct_word = find_by_name(similar_word)
+                    print(correct_word[1])
+                elif answer == "N":
+                    print("Alrighty!")
+                else:
+                    "Invalid answer."
+        except IndexError:
+            print("I have no suggestions of similar words for you. Try something else.")
 
 
-    """elif len(len_similar_word) > 0:
-        answer = input(
-            "Did you mean %s instead? Enter Y if yes, or N if no.\n " % similar_word)[0].upper()
-        if answer == "Y":
-            correct_word = find_by_name(similar_word)
-            return correct_word[0]
-        elif answer == "N":
-            return "Alrighty then. Bye!"
-        else:
-            return "Invalid answer."
 
-    else:
-        return "This word doesn't exist."""

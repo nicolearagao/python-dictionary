@@ -6,7 +6,6 @@ def program_execution():
     while not quit_program:
         output = translate()
 
-
         exit_question = input("Would you like to know another word? Press Q to quit or another key to continue. ")
         if exit_question == "":
             continue
